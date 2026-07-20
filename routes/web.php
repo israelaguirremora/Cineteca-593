@@ -30,3 +30,6 @@ Route::post('/films/store', [filmController::class, 'store']);
 //Actualizar peliculas actuales
 Route::put('/films/update/{id}', [filmController::class, 'update']);
 
+//Borrar películas
+Route::delete('/films/delete/{id}', [filmController::class, 'destroy']);
+

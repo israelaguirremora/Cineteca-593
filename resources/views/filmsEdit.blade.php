@@ -156,6 +156,7 @@
                             <td class="p-4">${film.title}</td>
                             <td class="p-4 text-center">
                                 <button class="btnEditar bg-blue-700 border-2 border-white px-3 py-1 rounded font-blockbuster text-xs uppercase" data-id="${film.film_id}">Editar</button>
+                                <button class="btnEliminar bg-red-700 border-2 border-white px-3 py-1 rounded font-blockbuster text-xs uppercase ml-1" data-id="${film.film_id}">Eliminar</button>
                             </td>
                         </tr>
                     `);
@@ -186,6 +187,32 @@
                 $('html, body').animate({ scrollTop: 0 }, 300);
             });
         });
+        $(document).on("click", ".btnEliminar", function () {
+        let id = $(this).data("id");
+
+        // Confirmación antes de borrar - requisito explícito del proyecto
+        let confirmar = confirm("¿Estás seguro de que deseas eliminar esta película? Esta acción no se puede deshacer.");
+
+        if (!confirmar) {
+            return; // el usuario canceló, no hace nada
+        }
+
+        $.ajax({
+            url: '/films/delete/' + id,
+            method: 'DELETE',
+            success: function (res) {
+                $("#mensaje").text("🗑️ " + res.message).removeClass('text-red-400').addClass('text-green-400');
+                cargarListado('/films/all'); // recarga la tabla sin la película borrada
+            },
+            error: function (xhr) {
+                if (xhr.status === 500) {
+                    $("#mensaje").text("⚠️ No se puede eliminar: esta película tiene registros relacionados (copias en inventario, actores, etc.)").addClass('text-red-400');
+                } else {
+                    $("#mensaje").text("Ocurrió un error al eliminar.").addClass('text-red-400');
+                }
+            }
+        });
+    });
 
         $("#btnCancelar").on("click", function () {
             $("#formEditar").addClass("hidden");

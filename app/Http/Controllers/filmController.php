@@ -108,6 +108,17 @@ class filmController extends Controller
 
         return response()->json(['message' => 'Película actualizada correctamente', 'film' => $film]);
     }
+    //Borar perlis
+    public function destroy($id)
+    {
+        $film = Film::find($id);
 
-    
+        if (!$film) {
+            return response()->json(['message' => 'Película no encontrada'], 404);
+        }
+
+        $film->delete();
+
+        return response()->json(['message' => 'Película eliminada correctamente']);
+    }
 }
